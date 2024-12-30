@@ -11,7 +11,7 @@
     "license": "MIT LICENSE",
     "autoload": {
         "psr-4": {
-            "AgSanjjeev\\RootsPhp\\": "app/"
+            "roots\\": "./"
         }
     },
     "authors": [

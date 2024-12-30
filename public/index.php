@@ -22,6 +22,11 @@
  * @since This is available since Release 1.0
  */
 
-// Implement Composer Autoloads
-require './../vendor/autoload.php';
+namespace roots;
 
+use roots\app\Main;
+
+// Implement Composer Autoloads
+require __DIR__ . './../vendor/autoload.php';
+
+$obj = new Main;
