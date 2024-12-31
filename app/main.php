@@ -2,6 +2,8 @@
 
 namespace roots\app;
 
+use roots\app\core\Configurations;
+
 /**
  * Class Main
  *
@@ -17,9 +19,30 @@ namespace roots\app;
 
 class Main
 {
-	
+	// Main instance static property
+	public static Main $main;
+
+	// Configurations instance static property
+	public Configurations $config;
+
+	// static class instance property need to create like private static Configuration $configuration;
 	public function __construct()
+	{		
+		self::$main = $this;
+		
+		$this->config = Configurations::getInstance();
+	}
+
+	public function run(): void
 	{
-		echo __DIR__ . PHP_EOL . __FILE__;
+		$this->config->get('database.username');
+		echo "application running";
+	}
+
+	public function showValue(mixed $value=''): mixed
+	{
+		echo "<pre>";
+		print_r($value);
+		echo "</pre>";
 	}
 }

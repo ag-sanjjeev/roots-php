@@ -25,8 +25,13 @@
 namespace roots;
 
 use roots\app\Main;
+use roots\app\core\Configurations;
 
 // Implement Composer Autoloads
 require __DIR__ . './../vendor/autoload.php';
 
+putenv("APP_ENVIRONMENT=development");
+
 $obj = new Main;
+//$obj->showValue(getenv('APP_ENV'));
+$obj->run();
