@@ -8,7 +8,7 @@ return [
 	'application' => [
 		'root_path' => dirname(dirname(__DIR__)),
 		'debug' => false,
-		'error_reporting' => E_WARNING;
+		'error_reporting' => E_WARNING
 	],
 	'database' => [
 		'driver' => 'mysql',
@@ -17,5 +17,9 @@ return [
 		'dbname' => 'roots_db',
 		'username' => 'root',
 		'password' => ''
+	],
+	'response' => [
+		404 => dirname(dirname(__DIR__)) . '/public/responses/404.view.php',
+		500 => dirname(dirname(__DIR__)) . '/public/responses/500.view.php'
 	]
 ];

@@ -35,7 +35,7 @@ class Main
 
 	public function run(): void
 	{
-		$this->config->get('database.username');
+		// require $this->config->get('response.404');
 		echo "application running";
 	}
 

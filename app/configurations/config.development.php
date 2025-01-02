@@ -17,5 +17,9 @@ return [
 		'dbname' => 'roots_db',
 		'username' => 'root',
 		'password' => ''
+	],
+	'response' => [
+		404 => dirname(dirname(__DIR__)) . '/public/responses/404.view.php',
+		500 => dirname(dirname(__DIR__)) . '/public/responses/500.view.php'
 	]
 ];
