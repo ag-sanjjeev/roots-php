@@ -100,6 +100,11 @@ class Request
 			$keys = explode(',', $keys);
 		}
 
+		// trim any whitespaces when specifying as string type $keys
+		$keys = array_map(function($key) {
+			return trim($key);
+		}, $keys);
+
 		$urlParams = self::$urlParams;
 
 		$extractedParams = array_map(function($key) use ($urlParams) {
@@ -117,9 +122,35 @@ class Request
 			$keys = explode(',', $keys);
 		}
 
+		// trim any whitespaces when specifying as string type $keys
+		$keys = array_map(function($key) {
+			return trim($key);
+		}, $keys);
+
 		$urlParams = self::$urlParams;
 
 		return array_diff_key($urlParams, array_flip($keys));
+	}
+
+	public static function hasInput(int|string $key): bool
+	{
+		return array_key_exists($key, self::$urlParams);
+	}
+
+	public static function missingInputs(array|string $keys): array|bool
+	{
+		if (is_string($keys)) {
+			$keys = explode(',', $keys);
+		}		
+
+		// trim any whitespaces when specifying as string type $keys
+		$keys = array_map(function($key) {
+			return trim($key);
+		}, $keys);
+
+		$missingKeys = array_diff($keys, array_keys(self::$urlParams));
+
+		return empty($missingKeys) ? false : $missingKeys;
 	}
 
 	public static function method(): string|null
@@ -156,4 +187,25 @@ class Request
 	{
 		return $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;		
 	}
+
+	public static function acceptableContentType(): mixed
+	{
+		return explode(',', trim($_SERVER['HTTP_ACCEPT'] ?? ''));
+	}
+
+	public static function isAcceptableContentType(array|string $contentTypes): bool
+	{
+		if (is_string($contentTypes)) {
+			$contentTypes = explode(',', $contentTypes);
+		}
+
+		// trim any whitespaces when specifying as string type $contentTypes
+		$contentTypes = array_map(function($type) {
+			return trim($type);
+		}, $contentTypes);
+
+		$acceptableContentType = self::acceptableContentType();
+
+		return !empty(array_intersect($acceptableContentType, $contentTypes));
+	}	
 }

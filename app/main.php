@@ -50,7 +50,12 @@ class Main
 		$this->showValue(Request::inputsOnly(['p','q']));
 		$this->showValue(Request::input('string'));
 		$this->showValue(Request::inputsExcept('p'));
-		$this->showValue(Request::ip());
+		$this->showValue(Request::hasInput('p'));
+		$this->showValue(Request::missingInputs(['p', 'string']));
+		$this->showValue(Request::acceptableContentType());
+		$this->showValue(Request::isAcceptableContentType(['text/html', 'application/xhtml+xml']));
+		$this->showValue(Request::ip());		
+
 		echo "application running";
 	}
 
