@@ -4,6 +4,7 @@ namespace roots\app;
 
 use roots\app\core\Configurations;
 use roots\app\core\Request;
+use roots\app\core\Route;
 
 /**
  * Class Main
@@ -29,6 +30,9 @@ class Main
 	// Request instance static property
 	public Request $request;
 
+	// Route instance static property
+	public Route $route;
+
 	// static class instance property need to create like private static Configuration $configuration;
 	public function __construct()
 	{		
@@ -36,6 +40,7 @@ class Main
 		
 		$this->config = Configurations::getInstance();
 		$this->request = new Request;
+		$this->route = new Route;
 	}
 
 	public function run(): void
@@ -56,7 +61,8 @@ class Main
 		$this->showValue(Request::isAcceptableContentType(['text/html', 'application/xhtml+xml']));
 		$this->showValue(Request::ip());		
 
-		echo "application running";
+		echo "application running" . PHP_EOL;
+		$this->route->implement();
 	}
 
 	public function showValue(mixed $value=''): void
