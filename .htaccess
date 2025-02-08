@@ -1,0 +1,14 @@
+# Use UTF-8 for anything served text/plain or text/html
+AddDefaultCharset utf-8
+
+# Force UTF-8 for below file formats
+AddCharset utf-8 .php .scss .css .js .json
+
+# Disable Directory Browsing
+Options All -Indexes
+
+# Target all requests to public/index.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f [OR]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ public/index.php [L,QSA]

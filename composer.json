@@ -1,0 +1,23 @@
+{
+    "name": "ag-sanjjeev/roots-php",
+    "description": "Roots are growing...",
+    "type": "framework",
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "php": ">=8.1"
+    },
+    "license": "MIT LICENSE",
+    "autoload": {
+        "psr-4": {
+            "roots\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "ag-sanjjeev"
+        }
+    ],
+    "minimum-stability": "dev"
+}

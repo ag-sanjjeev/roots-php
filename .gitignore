@@ -1,0 +1,18 @@
+# Git Ignore File
+!.gitignore
+
+# Configuration File
+config.php
+
+# Logs Directory and Log files
+**/logs/*
+*.log
+
+# Storage Files 
+public/storage/*
+
+# Vendor Directory
+/vendor/
+
+# Test Directory
+/test/
