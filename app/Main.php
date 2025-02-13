@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * ROOTS PHP MVC FRAMEWORK
+ *
+ * @category Framework
+ * @author ag-sanjjeev 
+ * @copyright 2025 ag-sanjjeev
+ * @license https://github.com/ag-sanjjeev/roots-php/LICENSE MIT
+ * @version Release: @1.0.0@
+ * @link https://github.com/ag-sanjjeev/roots-php
+ * @since This is available since Release 1.0.0
+ */
+
 namespace roots\app;
 
 use roots\app\core\Configuration;
@@ -12,47 +24,50 @@ use Exception;
 /**
  * Class Main
  *
- * This is a main class file. Which has control and co-ordinate 
- * features of the Model View Control architecture.
+ * Which has registers handlers for errors and exception and Timezone.
+ * It has instance, run and showValue methods
  *
- * @copyright 2024 ag-sanjjeev
- * @license https://github.com/ag-sanjjeev/roots-php/LICENSE MIT
- * @version Release: @1.0@
- * @link https://github.com/ag-sanjjeev/roots-php
- * @since Class available since Release 1.0
  */
-
 class Main
 {
-	// Main instance static property
+
+	/**
+   * Static property this class instance.
+   *
+   * @var Main
+   */
 	public static Main $instance;
 
-	// Configurations instance property
-	public Configuration $config;
-
-	// Request instance property
-	public Request $request;
-
-	// Response instance property
-	public Response $response;
-
-	// Route instance property
-	public Route $route;
-
-	// root path static property
+	/**
+	 * Static property root path
+   *
+   * @var string
+   */
 	public static string $rootPath;
 
-	// environment static property
+	/**
+	 * Static property environment
+   *
+   * @var string
+   */
 	public static string $environment;
 
-	// timezone static property
+	/**
+	 * Static property timezone
+   *
+   * @var string
+   */
 	public static string $timezone;
 
-	// static class instance property need to create like private static Configuration $configuration;
+	/**
+   * Constructs a new Main object.
+   */
 	public function __construct()
 	{		
-		self::$instance = $this;
-		$this->route = new Route;
+		self::$instance = $this; // setting this class instance
+		$this->route = new Route; // creating Route class object
+
+		// Setting configurations
 		self::$rootPath = Configuration::get('application.root_path');
 		self::$environment = Configuration::get('application.environment');
 		self::$timezone = Configuration::get('application.timezone');
@@ -65,13 +80,19 @@ class Main
 			date_default_timezone_set(self::$timezone);
 		}
 
+		// Throws an exception and stops execution when root path is not defined in configuration
 		if (is_null(self::$rootPath)) {
 			throw new Exception("Application Root Path Missing Error", 1);
 			die();
 		}
 	}
 
-	public static function instance()
+	/**
+   * Gets instance of this class.
+   *
+   * @return object self::$instance.
+   */
+	public static function instance(): object
 	{
 		if (!isset(self::$instance)) {
 			self::$instance = new self();
@@ -79,6 +100,9 @@ class Main
 		return self::$instance;
 	}
 
+	/**
+   * Gather requests and Delivers response.
+   */
 	public function run(): void
 	{
 		// Getting current request method and urlPath 
@@ -95,6 +119,11 @@ class Main
 		Response::deliver($callback, $middleware, $urlParameters);
 	}
 
+	/**
+   * Formats the given value.
+   *
+   * @param mixed $value.
+   */
 	public function showValue(mixed $value=''): void
 	{
 		echo "<pre>";

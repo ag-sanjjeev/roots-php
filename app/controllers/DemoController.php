@@ -1,4 +1,17 @@
 <?php
+/**
+ * ROOTS PHP MVC FRAMEWORK.
+ *
+ * This file contains methods for the route /demo.
+ *
+ * @category Framework
+ * @author ag-sanjjeev 
+ * @copyright 2025 ag-sanjjeev
+ * @license https://github.com/ag-sanjjeev/roots-php/LICENSE MIT
+ * @version Release: @1.0.0@
+ * @link https://github.com/ag-sanjjeev/roots-php
+ * @since This is available since Release 1.0.0
+ */
 
 namespace roots\app\controllers;
 
@@ -12,21 +25,26 @@ use roots\app\core\Storage;
 use \Exception;
 
 /**
- * DemoController class
+ * Class DemoController
+ *
+ * Which has methods for handling different request.
+ *
  */
 class DemoController
 {
-	// Request instance private static property
-	private static Request $request;
-
-	// Response instance private static property
-	private static Response $response;
-
+	/**
+   * Constructs a new DemoController object.
+   */
 	public function __construct()
 	{
 
 	}
 
+	/**
+   * Handles the index request.
+   *
+   * @return view.
+   */
 	public function index()
 	{
 		$contentType = 'text/html';
@@ -53,6 +71,9 @@ class DemoController
 		return Response::view('demo/index', ['src' => $src, 'fileSize' => $fileSize]);
 	}
 
+	/**
+   * Handles the form upload request.
+   */
 	public function formUpload()
 	{
 		$target = 'upload' . DIRECTORY_SEPARATOR . 'image';
@@ -60,16 +81,23 @@ class DemoController
 		$file = Request::input('image');
 		$target .= DIRECTORY_SEPARATOR . $imagename;
 		Storage::upload($file, $target);
+		echo "file uploaded";
 	}
 
+	/**
+   * Handles the download file request.
+   * @param string $filename.
+   */
 	public function downloadFile($filename)
 	{
 		$filePath = 'upload' . DIRECTORY_SEPARATOR . 'image' . DIRECTORY_SEPARATOR . $filename . '.png';
-
 		Storage::download($filePath);
-
 	}
 
+	/**
+   * Handles the delete file request.
+   * @param string $filename.
+   */
 	public function deleteFile($filename)
 	{
 		$filePath = 'upload' . DIRECTORY_SEPARATOR . 'image' . DIRECTORY_SEPARATOR . $filename . '.png';
@@ -78,6 +106,12 @@ class DemoController
 		echo 'file deleted';
 	}
 
+	/**
+   * Handles the show request.
+   *
+   * @param int $id.
+   * @return view.
+   */
 	public function show($id)
 	{
 		$contentType = 'text/html';
@@ -110,15 +144,15 @@ class DemoController
 		// $result = Demo::select(['author', 'SUM(views) AS total_views'])->groupBy('author')->orderDesc('total_views')->getAll();
 		// $result = Demo::select(['author', 'SUM(views) AS total_views'])->groupBy('author')->orderDesc('total_views')->limit(0,3)->getAll();
 		// $result = Demo::select(['author', 'SUM(views) AS total_views'])->groupBy('author')->orderDesc('total_views')->limit(1)->getAll();
-		// Demo::insert(['article_title' => 'title1', 'content' => 'some content', 'author' => 8, 'views' => 15, 'comments' => 2]);
-		// Demo::update(['article_title' => 'title2'])->where(['id' => 14])->set();
+		// Demo::insert(['article_title' => 'title413', 'content' => 'some content', 'author' => 8, 'views' => 15, 'comments' => 2]);
+		// Demo::update(['article_title' => 'title415'])->where(['id' => 415])->set();
 		// Demo::update(['article_title' => 'title7', 'content' => 'content 7'])->where(['id' => 7])->set();
 		// Demo::update(['article_title' => 'title test', 'content' => 'content test'])->where(['id' => 8, 'article_title' => 'title8'])->set();
 		// Demo::update(['article_title' => 'title test', 'content' => 'content test'])->where(['id' => 9])->whereOr(['article_title' => 'title1', 'id' => 12])->set();
 		// for ($i=0; $i < 100; $i++) { 
 		// 	Demo::insert(['article_title' => "title$i", 'content' => "some content $i", 'author' => ($i%3), 'views' => random_int(1000, 100000), 'comments' => random_int(0, 2000)]);
 		// }
-		// Demo::delete(413);
+		// Demo::delete(415);
 		// Demo::delete(['id' => 409, 'author' => 1]);
 		// Demo::delete(['author' => 0]);
 		$result = Demo::select('*')->orderDesc('id')->limit(5)->getAll();

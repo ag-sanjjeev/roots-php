@@ -1,52 +1,104 @@
 <?php
 
+/**
+ * ROOTS PHP MVC FRAMEWORK
+ *
+ * @category Framework
+ * @author ag-sanjjeev 
+ * @copyright 2025 ag-sanjjeev
+ * @license https://github.com/ag-sanjjeev/roots-php/LICENSE MIT
+ * @version Release: @1.0.0@
+ * @link https://github.com/ag-sanjjeev/roots-php
+ * @since This is available since Release 1.0.0
+ */
+
 namespace roots\app\core;
 
 use roots\app\Main;
 use roots\app\core\Request;
 use roots\app\core\Response;
+
 /**
- * Route class
+ * Class Route
+ *
+ * Which has properties and methods to handle routes.
+ * It has acquireRoutes, callbackDetails, get, post, any,
+ * middleware and name methods
+ *
  */
 class Route
 {
 	
-	// Route instance static property
-	private static Route $routeInstance;
+	/**
+	 * The singleton instance of the Route class.
+	 *
+	 * @var Route|null
+	 */
+	private static ?Route $routeInstance = null;
 
-	// Request instance static property
-	private static Request $requestInstance;
+	/**
+	 * The singleton instance of the Request class.
+	 *
+	 * @var Request|null
+	 */
+	private static ?Request $requestInstance = null;
 
-	// Response instance static property
-	private static Response $responseInstance;
+	/**
+	 * The singleton instance of the Response class.
+	 *
+	 * @var Response|null
+	 */
+	private static ?Response $responseInstance = null;
 
-	// Route method static property
+	/**
+	 * The HTTP request method (e.g., GET, POST).
+	 *
+	 * @var string
+	 */
 	private static string $_method;
 
-	// Route routePath static property
+	/**
+	 * The current route path being processed.
+	 *
+	 * @var string
+	 */
 	private static string $_routePath;
 
-	// Route callback static property
-	private static $_callback;
+	/**
+	 * The callback associated with the current route.  
+	 * This can be a callable, a string (view name), 
+	 * or an array (controller and method).
+	 *
+	 * @var callable|string|array|null
+	 */
+	private static mixed $_callback = null;
 
-	// Route lastIndex static property
-	private static string $_lastIndex;
-
-	// routes array static property
+	/**
+	 * An array to store defined routes. 
+	 * The keys of this array are route patterns,
+	 * and the values are the corresponding callbacks,
+	 * middlewares and parameters.
+	 *
+	 * @var array<string, callable|string|array>
+	 */
 	private static array $routes = [];
 
+	/**
+	 * Constructor for the Route class.
+	 *
+	 * Initializes routes by acquires the defined routes.
+	 */
 	public function __construct()
 	{
 		self::$routeInstance = $this;
-		// self::$responseInstance = Response::instance();
-		// self::$requestInstance = Request::instance();
-
 		$this->acquireRoutes();
 	}
 
 	/**
-	* Private function to load user defined route files 
-	*/
+	 * Loads the different route files from route directory.
+	 *
+	 * @return void
+	 */
 	private function acquireRoutes(): void
 	{
 		// setting routes directory
@@ -62,9 +114,16 @@ class Route
 	}
 
 	/**
-	* Private Method to match and extract callback, middleware and urlParameters
-	* for given method|ANY and urlPath
-	*/
+	 * Prepares callback details for the current request URL and method.
+	 *
+	 * This method determines the appropriate callback, middleware, and parameters
+	 * based on the defined routes and the current request.
+	 *
+	 * @return array<string|callable|null, string|callable|null, array|null> An array containing:
+	 *         - The callback (callable, string for view, or null).
+	 *         - The middleware (callable, string, or null).
+	 *         - The parameters to pass to the callback (array or null).
+	 */
 	public static function callbackDetails(string $requestMethod, string $urlPath): array
 	{
 		$method = $requestMethod;
@@ -149,7 +208,16 @@ class Route
 		return ['callback' => $callback, 'middleware' => $middleware, 'urlParameters' => $urlParameters];
 	}
 
-	public static function get(string $routePath, mixed $callback): object
+	/**
+	 * Defines a GET route.
+	 *
+	 * @param string $routePath The route path (e.g., '/users', '/products/{id}').
+	 * @param callable|string|array $callback The callback to execute when the route is matched.
+	 * It can be a callable, a string (view name), or an array (controller class and method).
+	 *
+	 * @return static Returns the Route instance for method chaining.
+	 */
+	public static function get(string $routePath, mixed $callback): static
 	{
 		self::$_routePath = $routePath;
 		self::$_callback = $callback;
@@ -160,7 +228,16 @@ class Route
 		return self::$routeInstance;
 	}
 
-	public static function post(string $routePath, mixed $callback): object
+	/**
+	 * Defines a POST route.
+	 *
+	 * @param string $routePath The route path (e.g., '/users', '/products/{id}').
+	 * @param callable|string|array $callback The callback to execute when the route is matched.
+	 * It can be a callable, a string (view name), or an array (controller class and method).
+	 *
+	 * @return static Returns the Route instance for method chaining.
+	 */
+	public static function post(string $routePath, mixed $callback): static
 	{
 		self::$_routePath = $routePath;
 		self::$_callback = $callback;
@@ -171,6 +248,15 @@ class Route
 		return self::$routeInstance;
 	}
 
+	/**
+	 * Defines a any HTTP request method route.
+	 *
+	 * @param string $routePath The route path (e.g., '/users', '/products/{id}').
+	 * @param callable|string|array $callback The callback to execute when the route is matched.
+	 * It can be a callable, a string (view name), or an array (controller class and method).
+	 *
+	 * @return static Returns the Route instance for method chaining.
+	 */
 	public static function any(string $routePath, mixed $callback): object
 	{
 		self::$_routePath = $routePath;
@@ -182,14 +268,26 @@ class Route
 		return self::$routeInstance;
 	}
 
-	public static function middleware(string $middleware): object
+	/**
+	 * Assigns middleware to the current route.
+	 *
+	 * @param string $middleware The name of the middleware to assign.
+	 * @return static Returns the Route instance for method chaining.
+	 */
+	public static function middleware(string $middleware): static
 	{
 		self::$routes[self::$_method][self::$_routePath]['middleware'] = $middleware;
 
 		return self::$routeInstance;
 	}
 
-	public static function name(string $name): object
+	/**
+	 * Assigns a name to the current route.
+	 *
+	 * @param string $name The name to assign to the route.
+	 * @return static Returns the Route instance for method chaining.
+	 */
+	public static function name(string $name): static
 	{
 		self::$routes[self::$_method][self::$_routePath]['name'] = $name;
 

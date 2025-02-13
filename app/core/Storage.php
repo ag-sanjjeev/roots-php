@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * ROOTS PHP MVC FRAMEWORK
+ *
+ * @category Framework
+ * @author ag-sanjjeev 
+ * @copyright 2025 ag-sanjjeev
+ * @license https://github.com/ag-sanjjeev/roots-php/LICENSE MIT
+ * @version Release: @1.0.0@
+ * @link https://github.com/ag-sanjjeev/roots-php
+ * @since This is available since Release 1.0.0
+ */
+
 namespace roots\app\core;
 
 use roots\app\core\Configuration;
@@ -11,35 +23,85 @@ use \SplFileInfo;
 use \Exception;
 
 /**
- * Storage Class
+ * Class Storage
+ *
+ * Which has properties and methods to handle storage.
+ * It has instance, path, filePath, fileSize, upload, 
+ * uploadAs, download and unlink methods
+ *
  */
 class Storage
 {
-	// public static Storage class instance property
-	public static Storage $instance;
+	/**
+	 * The singleton instance of the Storage class.
+	 *
+	 * @var Storage|null
+	 */
+	public static ?Storage $instance = null;
 
-	// private static default storage path if it not configured
+	/**
+	 * The default storage directory for files.
+	 *
+	 * This path is relative to the application's root directory.
+	 *
+	 * @var string
+	 */
 	private static string $defaultStorageDirectory = 'storage';
 
-	// private static actual storage directory property
+	/**
+	 * The configured storage directory for files.
+	 *
+	 * This path is relative to the application's root directory.  If not explicitly
+	 * configured, the default storage directory (`self::$defaultStorageDirectory`) is used.
+	 *
+	 * @var string
+	 */
 	private static string $storageDirectory;
 
-	// private static actual storage path property
+	/**
+	 * The actual, absolute and full path to the storage directory.
+	 *
+	 * This path is calculated by combining the application's root path with the
+	 * configured storage directory (`self::$storageDirectory`).
+	 *
+	 * @var string
+	 */
 	private static string $storagePath;
 
-	// private static root path property
+	/**
+	 * The root path of the application.
+	 *
+	 * This property stores the absolute path to the application's root directory.
+	 * It is typically used as a base for constructing other paths within the application.
+	 *
+	 * @var string
+	 */
 	private static string $rootPath;
 
-	// private static host address property
+	/**
+	 * The host name or IP address of the server.
+	 *
+	 * @var string
+	 */
 	private static string $host;
 
-	// private static base URL address property
+	/**
+	 * The base URL of the application (including protocol and host).
+	 *
+	 * @var string
+	 */
 	private static string $baseURL;
 
-	// private static virtual path property
-	private static string $virtualPath;
-
-	// Initiate Storage
+	/**
+	 * Constructor for the Storage class.
+	 *
+	 * Initializes the Storage instance, root path, storage directory, 
+	 * base URL, and host.
+	 * Creates the storage directory if it doesn't exist.
+	 *
+	 * @throws Exception If the root path cannot be determined 
+	 * Or the storage directory cannot be created.
+	 */
 	function __construct()
 	{
 		self::$instance = $this;
@@ -50,7 +112,6 @@ class Storage
 
 		if (is_null(self::$rootPath) || empty(self::$rootPath)) {
 			throw new Exception("Root Path Missing", 1);
-			die();
 		}
 
 		if (is_null(self::$storageDirectory) || empty(self::$storageDirectory)) {
@@ -60,61 +121,82 @@ class Storage
 
 		self::$storagePath = self::$rootPath . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . self::$storageDirectory;
 
-		// Creating a storage directory if it was not created yet
+		// Create storage directory if it doesn't exist.
 		if (!is_dir(self::$storagePath)) {
 			if (!mkdir(self::$storagePath)) {
 				throw new Exception("Cannot create storage directory", 1);
-				die();
 			} else {
 				Logger::logDebug("Storage directory created");
 			}
 		}
 	}
 
-	// public static instance method
+	/**
+	 * Returns the singleton instance of the Database class.
+	 *
+	 * @return Database The singleton instance.
+	 */
 	public static function instance(): object
 	{
+		// Check if an instance already exists.
 		if (!isset(self::$instance)) {
+			// Create a new instance if one doesn't exist.
 			self::$instance = new self();
 		}
 
+		// Return the singleton instance.
 		return self::$instance;
 	}
 
-	// public static method for storage path
+	/**
+	 * Returns the full path to a file within the storage directory.
+	 *
+	 * @param string $fileTarget The file target path, relative to the storage directory.
+	 * @return string|false The full path to the file, 
+	 * Or false if the file does not exist or the target is empty.
+	 * @throws Exception If the file target is empty.
+	 */
 	public static function path(string $fileTarget): bool|string
 	{
+		// Get storage instance
 		self::$instance = self::instance();
 
+		// Check if the fileTarget is missing
 		if (empty($fileTarget)) {
 			throw new Exception("File target cannot be an empty", 1);
-			return false;
 		}
 
 		$fileTarget = self::$storagePath . DIRECTORY_SEPARATOR . trim($fileTarget, DIRECTORY_SEPARATOR);
 
 		if (!file_exists($fileTarget)) {
-			throw new Exception("File is not exist", 1);
 			return false;
 		}
 
 		return $fileTarget;
 	}
 
-	// public static method for file path
+	/**
+	 * Returns the full URL to a file within the storage directory.
+	 *
+	 * @param string $fileTarget The file target path, relative to the storage directory.
+	 * @return string|false The full URL to the file, 
+	 * Or false if the file does not exist or the target is empty.
+	 * @throws Exception If the file target is empty.
+	 */
 	public static function filePath(string $fileTarget): bool|string
 	{
+		// Get storage instance
 		self::$instance = self::instance();
 
+		// Check if the fileTarget is empty
 		if (empty($fileTarget)) {
 			throw new Exception("File target cannot be an empty", 1);
-			return false;
 		}
+
 		$fileTarget = trim($fileTarget, DIRECTORY_SEPARATOR);
 		$filePath = self::$storagePath . DIRECTORY_SEPARATOR . $fileTarget;
 
 		if (!file_exists($filePath)) {
-			throw new Exception("File is not exist", 1);
 			return false;
 		}
 
@@ -123,68 +205,112 @@ class Storage
 		return $fileTarget;
 	}
 
-	// public static method for file size
+	/**
+	 * Returns the size of a file within the storage directory.
+	 *
+	 * @param string $fileTarget The file target path, relative to the storage directory.
+	 * @return int|false The size of the file in bytes, or false if the file does not exist.
+	 */
 	public static function fileSize(string $fileTarget): mixed
 	{
+		// Get storage instance
 		self::$instance = self::instance();
 
+		// Get file path for given target
 		$path = self::path($fileTarget);
 
+		// Returns files size if exist
 		if ($path !== false) {			
 			return filesize($path);	
 		}
+
+		// Return false if the file is not exist
 		return false;
 	}
 
-	// public static method for file upload
+	/**
+	 * Uploads a file to the storage directory.
+	 *
+	 * @param array $file An associative array containing file information (typically from $_FILES).
+	 * @param string $target The target path relative to the storage directory 
+	 * with file name (e.g., 'images/filename.jpg').
+	 * @return bool True on successful upload, false otherwise.
+	 * @throws Exception If the file array is invalid, the target is empty, 
+	 * Or a file with the same name already exists.
+	 */
 	public static function upload(array $file, string $target): bool
 	{
+		// Get storage instance
 		self::$instance = self::instance();		
-		if (!is_array($file)) {
-			throw new Exception("File is not uploaded", 1);
-			return false;
+
+		// Check for valid file array
+		if (!is_array($file) || !isset($file['tmp_name'], $file['name'], $file['error'])) {
+			throw new Exception("Invalid file array provided", 1);
 		}
 
-		if (empty($target)) {
-			throw new Exception("Cannot upload to the empty target", 1);
-			return false;
+		if ($file['error'] !== UPLOAD_ERR_OK) { // Check for upload errors.
+        throw new Exception("File upload failed with error code: " . $file['error'], 1);
+    }
+
+		if (empty($target)) { // Check for empty target
+			throw new Exception("Target directory cannot be empty.", 1);
 		}
 
 		$target = trim(trim($target, '\\'), '/');
 
-		// adding file extension based on uploaded
+		// Adding file extension based on uploaded
 		$uploadedFileName = explode('.', $file['name']);
 		$extension = array_pop($uploadedFileName);
 		$target .= '.' . $extension;
 
-		$target = self::$storagePath . DIRECTORY_SEPARATOR . $target;
+		$targetPath = self::$storagePath . DIRECTORY_SEPARATOR . $target;
 
-		if (file_exists($target)) {
-			throw new Exception("Uploaded file name already exist", 1);
-			return false;
+		if (file_exists($targetPath)) {
+			throw new Exception("Uploaded file name already exist" . $targetPath, 1);
 		}
 
-		return move_uploaded_file($file['tmp_name'], $target);
+		if (!move_uploaded_file($file['tmp_name'], $targetPath)) { // upload file to target
+        throw new Exception("File upload failed. Could not move uploaded file.", 1); 
+    }
+
+    return true;
 	}
 
-	// public static method for file upload as 
+	/**
+	 * Uploads a file to the storage directory with a specified file name.
+	 *
+	 * @param array $file An associative array containing file information (typically from $_FILES).
+	 * @param string $target The target directory relative to the storage directory (e.g., 'images/').
+	 * @param string $fileName The desired file name (without path components).
+	 * @return bool True on successful upload, false otherwise.
+	 * @throws Exception If the target or file name is empty, the file name contains path
+	 * separators, or the target directory cannot be created.
+	 */
 	public static function uploadAs(array $file, string $target, string $fileName): bool
 	{
+		// Get storage instance
 		self::$instance = self::instance();
 
-		if (empty($target)) {
+		if (!is_array($file) || !isset($file['tmp_name'], $file['name'], $file['error'])) { // Check for valid file array.
+        throw new Exception("Invalid file array provided.", 1);
+    }
+
+    if ($file['error'] !== UPLOAD_ERR_OK) { // Check for upload errors.
+        throw new Exception("File upload failed with error code: " . $file['error'], 1); 
+    }
+
+		if (empty($target)) {	// Check target is an empty
 			throw new Exception("Cannot upload to the empty target", 1);
 			return false;
 		}
 
-		if (empty($fileName)) {
+		if (empty($fileName)) { // Check filename is an empty
 			throw new Exception("Upload file name cannot be an empty", 1);
 			return false;
 		}
 
 		if (strpos($fileName, '/') !== false || strpos($fileName, '\\' !== false)) {
-			throw new Exception("File name does not allowed with path", 1);
-			return false;
+			throw new Exception("File name cannot contain path separators", 1);
 		}
 
 		$target = trim(trim($target, '\\'), '/');
@@ -193,32 +319,46 @@ class Storage
 
 		if (!is_dir($targetPath)) {
 			if (!mkdir($targetPath, 0777, true)) {
-				throw new Exception("Cannot create target path directories", 1);
-				return false;
+				throw new Exception("Cannot create target directory", 1);
 			}
 		}
 
 		$targetPath = $target . DIRECTORY_SEPARATOR . trim($fileName);
 
-		return self::upload($file, $targetPath);
+		if (file_exists($targetPath)) { // File is already exist
+        throw new Exception("File with that name already exists: " . $targetPath, 1); 
+    }
+
+
+    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+        throw new Exception("File upload failed. Could not move uploaded file.", 1);
+    }
+
+		return true;
 	}
 
-	// public static method for file download
+	/**
+	 * Downloads a file from the storage directory.
+	 *
+	 * @param string $file The path to the file relative to the storage directory.
+	 * @return void|false  If headers are already sent, returns false. 
+	 * Otherwise, sends the file for download and exits the script.
+	 * @throws Exception If the file name is empty or the file is not found or readable.
+	 */
 	public static function download(string $file): mixed
 	{
+		// Get storage instance
 		self::$instance = self::instance();
 
-		if (empty($file)) {
+		if (empty($file)) { // Check for file target is an empty 
 			throw new Exception("File name cannot be an empty", 1);
-			return false;
 		}
 
 		$file = trim(trim(trim($file), '/'), '\\');		
 		$targetPath = self::path($file);
 
-		if (!file_exists($targetPath) || !is_readable($targetPath)) {
+		if ($targetPath === false || !is_readable($targetPath)) { // Check for file exist and readable
 			throw new Exception("File is neither exist nor readable", 1);
-			return false;
 		}
 
 		$target = self::filePath($file);
@@ -228,36 +368,43 @@ class Storage
 		$targetSize = self::fileSize($file);
 		$filename = basename($targetPath);
 
-		if (!headers_sent()) {
-			header('Content-Type:' . $mimeType);
-			header('Content-Disposition: attachment; filename="' . $filename . '"');
-			header('Content-Description: File Transfer');
-			header("Content-Transfer-Encoding: binary");
-			header('Expires: 0');
-			header('Cache-Control: must-revalidate');
-			header('Pragma: no-cache');
-			header('Content-Length: ' . $targetSize);
-			flush();
-			readfile($targetPath);
-			exit;			
+		if (headers_sent()) {
+			return false; // Return false if headers are already sent
 		}
+
+		header('Content-Type:' . $mimeType);
+		header('Content-Disposition: attachment; filename="' . $filename . '"');
+		header('Content-Description: File Transfer');
+		header("Content-Transfer-Encoding: binary");
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+		header('Content-Length: ' . $targetSize);
+		flush();
+		readfile($targetPath);
+		exit;					
 	}
 
-	// public static method for unlink file
+	/**
+	 * Unlinks (deletes) a file from the storage directory.
+	 *
+	 * @param string $link The path to the file relative to the storage directory.
+	 * @return bool True on successful deletion, false otherwise.
+	 * @throws Exception If the link is empty or the file does not exist.
+	 */
 	public static function unlink(string $link): bool
 	{
+		// Get storage instance
 		self::$instance = self::instance();
 
-		if (empty($link)) {
-			throw new Exception("Cannot unlink file for empty target", 1);
-			return false;
+		if (empty($link)) { // Check for empty link
+			throw new Exception("File path cannot be an empty", 1);
 		}
 
 		$link = trim(trim(trim($link), '/'), '\\');
 		$link = self::$storagePath . DIRECTORY_SEPARATOR . $link;
 
 		if (!file_exists($link)) {
-			throw new Exception("Cannot unlink not exist file", 1);
 			return false;
 		}
 

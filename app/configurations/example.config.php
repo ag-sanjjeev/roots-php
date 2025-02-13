@@ -1,9 +1,18 @@
 <?php
 
 /**
-* This is a example configuration file
-* Rename this file as config.php on the app\configurations\ directory
-*/
+ * ROOTS PHP MVC FRAMEWORK.
+ *
+ * This file contains the configurations for the project.
+ *
+ * @category Framework
+ * @author ag-sanjjeev 
+ * @copyright 2025 ag-sanjjeev
+ * @license https://github.com/ag-sanjjeev/roots-php/LICENSE MIT
+ * @version Release: @1.0.0@
+ * @link https://github.com/ag-sanjjeev/roots-php
+ * @since This is available since Release 1.0.0
+ */
 
 return [
 	'application' => [
