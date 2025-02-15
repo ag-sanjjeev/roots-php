@@ -3,7 +3,8 @@
 /**
  * ROOTS PHP MVC FRAMEWORK.
  *
- * This file contains the configurations for the project.
+ * This is template configurations for the project.
+ * These configurations are stored as PHP array.
  *
  * @category Framework
  * @author ag-sanjjeev 
