@@ -11,8 +11,15 @@ config.php
 # Storage Files 
 public/storage/*
 
-# Vendor Directory
+# Composer files
+composer.lock
+
+# Vendor directory (dependencies)
 /vendor/
+
+# Cache directories
+/cache
+/.composer/cache
 
 # Test Directory
 /test/
