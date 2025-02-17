@@ -323,7 +323,11 @@ class Storage
 			}
 		}
 
-		$targetPath = $target . DIRECTORY_SEPARATOR . trim($fileName);
+		// Adding file extension based on uploaded
+		$uploadedFileName = explode('.', $file['name']);
+		$extension = array_pop($uploadedFileName);		
+
+		$targetPath .= DIRECTORY_SEPARATOR . trim($fileName) . '.' . $extension;
 
 		if (file_exists($targetPath)) { // File is already exist
         throw new Exception("File with that name already exists: " . $targetPath, 1); 
