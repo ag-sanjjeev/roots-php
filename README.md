@@ -10,7 +10,7 @@ The concept and purpose of this framework is minimal and robust rather than bulk
 
 ## &#9780; Overview:
 1. [Installation](#-installation)
-2. [Documentation](#-documentation)
+2. [Documentations](#-documentations)
 3. [Contribution](#-contribution)
 4. [Disclaimer](#-disclaimer)
 5. [License](#-license)
@@ -18,16 +18,42 @@ The concept and purpose of this framework is minimal and robust rather than bulk
 
 ## &#9873; Installation:
 
-Fetch this project in your system by using the below commands:
+Currently, This project is not available in any of the package managers.
 
+To use this framework, Follow the installation process below:
+
+**Requirements:**
+- It requires PHP version 8.1 or higher.
+- Git installed in the system.
+- Composer installed in the system.
+
+**Steps:**
+- First create an empty project directory. Where this framework to be cloned. 
+- Move to the project directory and Initiate git repository. 
+- Fetch this framework latest changes with below command.
 ```bash
-git fetch https://github.com/ag-sanjjeev/roots-php.git
+git fetch --depth 1 https://github.com/ag-sanjjeev/roots-php-framework.git
+```
+- Now, the repository has FETCH_HEAD, Then merge FETCH_HEAD to the current active branch by below command.
+```bash
+git merge FETCH_HEAD
 ```
 
-Fetch specific release from release branch:
+**Post Installation:**
+- Copy the `example.config.php` as `config.php` under `app\configurations`.
+- Install composer dependencies and packages.
 
+*For production:*
 ```bash
-git fetch --branch release https://github.com/ag-sanjjeev/roots-php.git
+composer install --no-dev
+```
+*For development:*
+```bash
+composer install
+```
+- Initiate Composer Autoload with below command.
+```bash
+composer dump-autoload
 ```
 
 ## &#9873; Documentations:

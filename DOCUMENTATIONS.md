@@ -32,19 +32,51 @@ This documentation covers essential aspects of the **ROOTS Framework**, It start
 
 ### &#10022; Requirements:
 
-The **ROOTS Framework** requires PHP version 8.1 or higher.  This applies to both the core framework dependencies and development dependencies, ensuring compatibility for both production and development environments.  The `minimum-stability` is set to `dev`, indicating the framework is currently in development.
+The **ROOTS Framework** requires PHP version 8.1 or higher. This applies to both the core framework dependencies and development dependencies, ensuring compatibility for both production and development environments. The `minimum-stability` is set to `dev`, indicating the framework is currently in development.
+
+It requires git to be installed in the system to clone the framework. It requires composer to be installed in the system for install dependencies and packages as well as create composer autoloader. 
 
 ### &#10022; Installation:
 
-To install the **ROOTS Framework**, To retrieve the latest code without downloading the entire repository history by fetching from the [repository](#). This approach is particularly useful for keeping up-to-date with development without the overhead of a full clone. 
+Currently, This project is not available in any of the package managers.
 
+To use this framework, Follow the installation process below:
+
+**Requirements:**
+- It requires PHP version 8.1 or higher.
+- Git installed in the system.
+- Composer installed in the system.
+
+**Steps:**
+- First create an empty project directory. Where this framework to be cloned. 
+- Move to the project directory and Initiate git repository. 
+- Fetch this framework latest changes with below command.
 ```bash
-git fetch --depth=1 <github_repository_link> refs/heads/*:refs/remotes/<roots_framework>/*
+git fetch --depth 1 https://github.com/ag-sanjjeev/roots-php-framework.git
+```
+- Now, the repository has FETCH_HEAD, Then merge FETCH_HEAD to the current active branch by below command.
+```bash
+git merge FETCH_HEAD
 ```
 
-This command fetches only the most recent commit history and sets the remote name to `roots_framework`, preventing potential conflicts with other remote origins you might have configured. After fetching, you can create a local branch based on the fetched code.
+**Post Installation:**
+- Copy the `example.config.php` as `config.php` under `app\configurations`.
+- Install composer dependencies and packages.
 
-*Make sure, the framework works without any trouble before start developing the project with your testing logic.*
+*For production:*
+```bash
+composer install --no-dev
+```
+*For development:*
+```bash
+composer install
+```
+- Initiate Composer Autoload with below command.
+```bash
+composer dump-autoload
+```
+
+*Make sure, the framework works without any trouble before start developing the project. And apply testing logic and run test before use it.*
 
 ### &#10022; Project Structure:
 
